@@ -1,5 +1,5 @@
 module RailsAdmin::Config::Fields::Types
-  class Map < RailsAdmin::Config::Fields::Base
+  class Place < RailsAdmin::Config::Fields::Base
 
     RailsAdmin::Config::Fields::Types::register(:place, self)
 
@@ -14,11 +14,18 @@ module RailsAdmin::Config::Fields::Types
     end
 
     register_instance_option(:partial) do
-      :form_map
+      :place_select
     end
 
-    # Google Maps API Key - optional
     register_instance_option(:google_api_key) do
+      nil
+    end
+
+    register_instance_option(:places_api_key) do
+      nil
+    end
+
+    register_instance_option(:foursquare_api_key) do
       nil
     end
 
