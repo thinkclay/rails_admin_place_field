@@ -1,11 +1,15 @@
-= javascript_include_tag ("http://maps.googleapis.com/maps/api/js?key=#{field.google_api_key}&sensor=false&callback=init_map_field")
+= javascript_include_tag ("//maps.googleapis.com/maps/api/js?key=#{field.google_api_key}&sensor=false&callback=init_map_field")
 
 = javascript_tag do
   :plain
-    function init_map_field(){
-    jQuery(function(){
+    function init_map_field()
+    {
+    jQuery(function() {
       var marker = null;
-      var latlng = new google.maps.LatLng(#{form.object.send(field.name) || field.default_latitude}, #{form.object.send(field.longitude_field) || field.default_longitude});
+      var latlng = new google.maps.LatLng(
+        #{form.object.send(field.name) || field.default_latitude},
+        #{form.object.send(field.longitude_field) || field.default_longitude}
+      );
 
       var myOptions = {
         zoom: #{field.default_zoom_level},
@@ -24,13 +28,18 @@
 
   :plain
       google.maps.event.addListener(map, 'click', function(e) {
-        updateLocation(e.latLng);
+        map_update(e.latLng);
+        foursquare_search(e.latLng.lat() + ',' + e.latLng.lng());
       });
 
-      function updateLocation(location) {
-        if(marker) {
+      function map_update(location)
+      {
+        if (marker)
+        {
           marker.setPosition(location);
-        } else {
+        }
+        else
+        {
           marker = new google.maps.Marker({
             position: location,
             map: map
@@ -42,7 +51,38 @@
         jQuery("##{field.longitude_dom_name}").val(location.lng());
       }
 
+      function foursquare_search(location)
+      {
+        var foursquare_url = 'https://api.foursquare.com/v2/venues/search?ll='+ location + '&intent=checkin'
+          + '&client_id=' + "#{field.foursquare_api_key}"
+          + '&client_secret=' + "#{field.foursquare_api_secret}"
+          + '&v=' + "#{Time.new.strftime("%Y%m%d")}";
+
+        $.get(
+          foursquare_url,
+          function(response) {
+            if ( response && response.meta.code == 200 )
+            {
+              response.response.venues.forEach(function(venue) {
+                jQuery('#foursquare_venue').append('<option value="'+venue.id+'">'+venue.name+'</option>').change(function() {
+                  jQuery("##{field.foursquare_dom_name}").val($(this).val());
+                });
+              });
+            }
+            else
+            {
+              alert('foursquare venue lookup failed');
+            }
+          });
+      }
+
     })};
+
+
 %div.ramf-map-container{:id => field.dom_name, :style => "width:300px;height:200px"}
+%select#foursquare_venue
+  %option
+
+= form.send :hidden_field, field.foursquare_field, :id => field.foursquare_dom_name
 = form.send :hidden_field, field.name, :id => field.latitude_dom_name
 = form.send :hidden_field, field.longitude_field, :id => field.longitude_dom_name

@@ -4,13 +4,17 @@ module RailsAdmin::Config::Fields::Types
     RailsAdmin::Config::Fields::Types::register(:place, self)
 
     def allowed_methods
-      [@name, longitude_field]
+      [@name, longitude_field, foursquare_field]
     end
 
     # THe name of the corresponding longitude field to match the latitude field
     # in this object.
     register_instance_option(:longitude_field) do
       :longitude
+    end
+
+    register_instance_option(:foursquare_field) do
+      :foursquare
     end
 
     register_instance_option(:partial) do
@@ -26,6 +30,10 @@ module RailsAdmin::Config::Fields::Types
     end
 
     register_instance_option(:foursquare_api_key) do
+      nil
+    end
+
+    register_instance_option(:foursquare_api_secret) do
       nil
     end
 
@@ -55,6 +63,10 @@ module RailsAdmin::Config::Fields::Types
 
     def longitude_dom_name
       @lon_dom_name ||= "#{bindings[:form].object_name}_#{longitude_field}"
+    end
+
+    def foursquare_dom_name
+      @foursquare_dom_name ||= "#{bindings[:form].object_name}_#{foursquare_field}"
     end
   end
 end
