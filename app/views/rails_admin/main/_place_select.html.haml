@@ -1,23 +1,38 @@
-= javascript_include_tag ("//maps.googleapis.com/maps/api/js?key=#{field.google_api_key}&sensor=false&callback=init_map_field")
+= javascript_include_tag ("//maps.googleapis.com/maps/api/js?key=#{field.google_api_key}&sensor=false&libraries=places&callback=init_map_field")
 
 = javascript_tag do
   :plain
     function init_map_field()
     {
     jQuery(function() {
+
       var marker = null;
       var latlng = new google.maps.LatLng(
         #{form.object.send(field.name) || field.default_latitude},
         #{form.object.send(field.longitude_field) || field.default_longitude}
       );
 
-      var myOptions = {
+      var map_options = {
         zoom: #{field.default_zoom_level},
         center: latlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
 
-      var map = new google.maps.Map(document.getElementById("#{field.dom_name}"), myOptions);
+      var map = new google.maps.Map(document.getElementById("#{field.dom_name}"), map_options);
+
+      // Try HTML5 geolocation
+      if ( navigator.geolocation )
+      {
+        navigator.geolocation.getCurrentPosition(
+          function(position) {
+            var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            map.setCenter(pos);
+          },
+          function() {
+            handleNoGeolocation(true);
+          }
+        );
+      }
 
   - if form.object.send(field.name) && form.object.send(field.longitude_field)
     :plain
@@ -30,6 +45,9 @@
       google.maps.event.addListener(map, 'click', function(e) {
         map_update(e.latLng);
         foursquare_search(e.latLng.lat() + ',' + e.latLng.lng());
+        places_search(e.latLng);
+
+        $('#foursquare_options #foursquare_venue').html('<select id="foursquare_venue_select"><option></option></select>');
       });
 
       function map_update(location)
@@ -64,7 +82,7 @@
             if ( response && response.meta.code == 200 )
             {
               response.response.venues.forEach(function(venue) {
-                jQuery('#foursquare_venue').append('<option value="'+venue.id+'">'+venue.name+'</option>').change(function() {
+                jQuery('#foursquare_venue_select').append('<option value="'+venue.id+'">'+venue.name+'</option>').change(function() {
                   jQuery("##{field.foursquare_dom_name}").val($(this).val());
                 });
               });
@@ -76,13 +94,73 @@
           });
       }
 
+      // @todo : make this add a new marker so that the user knows that both the original geo + the places geo are recorded
+      function places_search(location)
+      {
+        autocomplete = new google.maps.places.Autocomplete(
+          document.getElementById('google_place_input'),
+          {
+            bounds: new google.maps.Circle({center: location, radius: 100}).getBounds()
+          }
+        );
+
+        google.maps.event.addListener(autocomplete, 'place_changed', function() {
+          var place = autocomplete.getPlace();
+
+          console.log(place.id);
+
+          $("##{field.gplace_dom_name}").val(place.id);
+
+          if ( ! place.geometry )
+          {
+            alert('A place was not found');
+            return;
+          }
+
+          // If the place has a geometry, then present it on a map.
+          if ( place.geometry.viewport )
+          {
+            // Use the viewport if it is provided.
+            map.fitBounds(place.geometry.viewport);
+          }
+          else {
+            // Otherwise use the location and set a chosen zoom level.
+            map.setCenter(place.geometry.location);
+            map.setZoom(17);
+          }
+          var image = {
+            url: place.icon,
+            size: new google.maps.Size(71, 71),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(17, 34),
+            scaledSize: new google.maps.Size(25, 25)
+          };
+          marker.setIcon(image);
+          marker.setPosition(place.geometry.location);
+        });
+      }
+
     })};
 
 
-%div.ramf-map-container{:id => field.dom_name, :style => "width:300px;height:200px"}
-%select#foursquare_venue
-  %option
+%h3 Geo Location Data
+%p Click on the map to select a geo location. Once you've selected this, the foursquare and google places boxes will become active (if you've set them up correctly), for you to choose a relevant association.
+%div.ramf-map-container{:id => field.dom_name, :style => "width:90%; height:300px"}
 
-= form.send :hidden_field, field.foursquare_field, :id => field.foursquare_dom_name
+%hr
+
+#places_options
+  %h4 Google Place
+  %input#google_place_input{ :type => 'text', :style => "width: 90%;" }
+
+%hr
+
+#foursquare_options
+  %h4 Foursquare Venue
+  #foursquare_venue You have to select a place on the map to retrieve a list of nearby results
+  %br
+
 = form.send :hidden_field, field.name, :id => field.latitude_dom_name
 = form.send :hidden_field, field.longitude_field, :id => field.longitude_dom_name
+= form.send :hidden_field, field.foursquare_field, :id => field.foursquare_dom_name
+= form.send :hidden_field, field.gplace_field, :id => field.gplace_dom_name
