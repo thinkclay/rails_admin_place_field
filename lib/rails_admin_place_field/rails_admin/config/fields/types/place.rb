@@ -4,7 +4,7 @@ module RailsAdmin::Config::Fields::Types
     RailsAdmin::Config::Fields::Types::register(:place, self)
 
     def allowed_methods
-      [@name, longitude_field, foursquare_field]
+      [@name, longitude_field, foursquare_field, gplace_field]
     end
 
     # THe name of the corresponding longitude field to match the latitude field
@@ -17,15 +17,15 @@ module RailsAdmin::Config::Fields::Types
       :foursquare
     end
 
+    register_instance_option(:gplace_field) do
+      :gplace
+    end
+
     register_instance_option(:partial) do
       :place_select
     end
 
     register_instance_option(:google_api_key) do
-      nil
-    end
-
-    register_instance_option(:places_api_key) do
       nil
     end
 
@@ -67,6 +67,10 @@ module RailsAdmin::Config::Fields::Types
 
     def foursquare_dom_name
       @foursquare_dom_name ||= "#{bindings[:form].object_name}_#{foursquare_field}"
+    end
+
+    def gplace_dom_name
+      @gplace_dom_name ||= "#{bindings[:form].object_name}_#{gplace_field}"
     end
   end
 end

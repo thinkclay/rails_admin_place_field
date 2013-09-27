@@ -48,6 +48,8 @@ RailsAdmin.config do |config|
     edit do
       field :latitude, :place do
         longitude_field :longitude
+        foursquare_field :foursquare
+        gplace_field :gplace
         google_api_key "a1b2c3d4e5f6deadbeef"
         places_api_key "a1b2c3d4e5f6deadbeef"
         foursquare_api_key "a1b2c3d4e5f6deadbeef"
