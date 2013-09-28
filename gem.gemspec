@@ -3,15 +3,13 @@
 Gem::Specification.new do |s|
   s.add_development_dependency('rspec-rails', '>= 2.4')
 
-  # If you add a runtime dependency, please maintain alphabetical order
   s.add_runtime_dependency('rails', '>= 3.0.0')
 
-  # TODO: uncomment next line when rails_admin gem will be released
   s.add_runtime_dependency('rails_admin', '> 0.0.1')
 
 
   s.name              = "rails_admin_place_field"
-  s.version           = "0.0.12"
+  s.version           = "0.0.13"
   s.platform          = Gem::Platform::RUBY
   s.authors           = ["Clay McIlrath"]
   s.email             = ["clay.mcilrath@gmail.com"]

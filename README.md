@@ -1,13 +1,13 @@
 # Rails Admin Place Field
 
-rails_admin_place_field is a gem that works with [rails_admin](https://github.com/sferik/rails_admin) to provide an easy to use Google Maps interface for displaying and setting geographic co-ordinates in a model and then performing lookups for associations to a nearby Google Place or Foursquare Venue
+rails_admin_place_field is a gem that works with [rails_admin](https://github.com/sferik/rails_admin) to provide an easy to use Google Maps interface for displaying and setting geographic coordinates in a model and then performing lookups for associations to a nearby Google Place or Foursquare Venue
 
 Where a latitude and longitude is set on the model, it is indicated by a marker shown on a Google map centered at the marker. The administrator can change the value of these fields by clicking on the desired new location on the map.
 
 
 ## Usage
 
-rails_admin_place_field expects that the model will have two attributes, one for latitude and one for longitude of the point represented. To enable rails_admin_place_field, add the following to your `Gemfile`:
+rails_admin_place_field expects that the model will have two attributes, one for latitude and one for longitude of the point represented. To enable rails_admin_place_field, add the gem to your `Gemfile`. I recommend using the git repo until I release a 1.0.0 version of the gem, however, you can add the [RupyGems](https://rubygems.org/gems/rails_admin_place_field) version if you feel so inclined.
 
 ```ruby
 gem "rails_admin_place_field", :git => "git://github.com/thinkclay/rails_admin_place_field.git"
@@ -19,6 +19,7 @@ Then, add in your `config/initializers/rails_admin.rb` initializer:
 RailsAdmin.config do |config|
   config.model Place do
     edit do
+      label "Geo and Place Info"
       field :latitude, :place
       field :longitude, :hidden
     end
@@ -47,6 +48,7 @@ RailsAdmin.config do |config|
   config.model Place do
     edit do
       field :latitude, :place do
+        label "Geo and Place Info"
         longitude_field :longitude
         foursquare_field :foursquare
         gplace_field :gplace
@@ -62,6 +64,6 @@ end
 ```
 
 -------
-rails_admin_place_field is licensed under the MIT license.
+rails_admin_place_field is licensed under the [MIT license](http://opensource.org/licenses/MIT).
 
-Kudos and credit to [beyondthestory](https://github.com/beyondthestory/rails_admin_map_field) for his map_field which gave me the starting point to learn how to make this field
+Kudos and credit to [beyondthestory](https://github.com/beyondthestory/rails_admin_map_field) for the map_field which gave me the starting point to learn how to make this
