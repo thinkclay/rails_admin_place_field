@@ -1,3 +1,5 @@
+[![Gem Version](https://badge.fury.io/rb/rails_admin_place_field.png)](http://badge.fury.io/rb/rails_admin_place_field) [![Build Status](https://drone.io/github.com/unicorn/rails_admin_place_field/status.png)](https://drone.io/github.com/unicorn/rails_admin_place_field/latest)
+
 # Rails Admin Place Field
 
 rails_admin_place_field is a gem that works with [rails_admin](https://github.com/sferik/rails_admin) to provide an easy to use Google Maps interface for displaying and setting geographic coordinates in a model and then performing lookups for associations to a nearby Google Place or Foursquare Venue
@@ -7,7 +9,7 @@ Where a latitude and longitude is set on the model, it is indicated by a marker 
 
 ## Usage
 
-rails_admin_place_field expects that the model will have two attributes, one for latitude and one for longitude of the point represented. To enable rails_admin_place_field, add the gem to your `Gemfile`. I recommend using the git repo until I release a 1.0.0 version of the gem, however, you can add the [RupyGems](https://rubygems.org/gems/rails_admin_place_field) version if you feel so inclined.
+rails_admin_place_field expects that the model will have two attributes, one for latitude and one for longitude of the point represented. To enable rails_admin_place_field, add the gem to your `Gemfile`. I recommend using the git repo until I release a 1.0.0 version of the gem, however, you can add the [RubyGems](https://rubygems.org/gems/rails_admin_place_field) version if you feel so inclined.
 
 ```ruby
 gem "rails_admin_place_field", :git => "git://github.com/thinkclay/rails_admin_place_field.git"
