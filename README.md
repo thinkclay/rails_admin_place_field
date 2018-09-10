@@ -36,7 +36,7 @@ end
 
 For different configurations, rails_admin_place_field can be configured with the following:
 
-- `longitude_field` - the name of the longitude field that forms the the co-ordinate with the latitude field specified. Defaults to "longitude"
+- `longitude_field` - the name of the longitude field that forms the co-ordinate with the latitude field specified. Defaults to "longitude"
 - `google_api_key` - if you use a Google Maps API Key, it can be specified here, otherwise the maps will do limited lookups without a key
 - `foursquare_api_key` - this api will be disabled until a valid key is provided
 - `places_api_key` - this api will be disabled until a valid key is provided
